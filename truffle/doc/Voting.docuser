@@ -1,0 +1,47 @@
+{
+  "kind": "user",
+  "methods":
+  {
+    "addProposal(string)":
+    {
+      "notice": "Permettre l'ajout d'une nouvelle proposition dans la structure d'une proposition par sa description."
+    },
+    "addVoter(address)":
+    {
+      "notice": "Permettre l'ajout d'un voter la structure d'un voter par son adresse."
+    },
+    "endProposalsRegistering()":
+    {
+      "notice": "Permettre de changer le status pour ProposalsRegistrationEnded."
+    },
+    "endVotingSession()":
+    {
+      "notice": "Permettre de changer le status pour ProposalsRegistrationStarted."
+    },
+    "getOneProposal(uint256)":
+    {
+      "notice": "Permettre de r\u00e9cup\u00e9rer la structure d'une proposition par son identifiant."
+    },
+    "getVoter(address)":
+    {
+      "notice": "Permettre de r\u00e9cup\u00e9rer la structure d'un voter par son adresse."
+    },
+    "setVote(uint256)":
+    {
+      "notice": "Permettre le vote pour les propositions enregistr\u00e9e pr\u00e9c\u00e9dement."
+    },
+    "startProposalsRegistering()":
+    {
+      "notice": "Permettre de changer le status pour ProposalsRegistrationStarted."
+    },
+    "startVotingSession()":
+    {
+      "notice": "Permettre de changer le status pour ProposalsRegistrationStarted."
+    },
+    "tallyVotes()":
+    {
+      "notice": "Permettre de compter les votes pour d\u00e9terminer la proposition gagnante."
+    }
+  },
+  "version": 1
+}

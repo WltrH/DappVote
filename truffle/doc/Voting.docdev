@@ -1,0 +1,97 @@
+{
+  "author": "Cyril Castagnet",
+  "kind": "dev",
+  "methods":
+  {
+    "addProposal(string)":
+    {
+      "custom:event": "pour savoir si la proposition a bien \u00e9t\u00e9 enregistr\u00e9.",
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyVoters\".Seul les voters enregistr\u00e9s peuvent rentrer une proposition.Un workflow ProposalsRegistrationStarted doit \u00eatre mis en status pour acc\u00e9der \u00e0 la fonction.Un voter ne peut pas ne rien proposer en proposition.la proposition est envoy\u00e9e dans la structure",
+      "params":
+      {
+        "_desc": "Est la description de la proposition enregistr\u00e9e."
+      }
+    },
+    "addVoter(address)":
+    {
+      "custom:event": "pour connaitre l'adresse du nouveau voter dans les logs",
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyOwner\" qui se trouve dans l'import openZeppelin,v contract ownable.Seul l'\u00e9metteur du contrat peut rentrer un voter.Un workflow RegisteringVoters doit \u00eatre mis en status pour acc\u00e9der \u00e0 la fonction.Un voter ne peut \u00eatre enregistr\u00e9 qu'une seule fois.",
+      "params":
+      {
+        "_addr": "l'adresse du voter que l'on souhaite r\u00e9cup\u00e9rer."
+      }
+    },
+    "endProposalsRegistering()":
+    {
+      "custom:event": "pour connaitre l'ancien et le nouveau status.",
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyOwner\" qui se trouve dans l'import openZeppelin,v contract ownable.Seul le owner du  contrat peut changer de status.Un workflow ProposalsRegistrationStarted doit \u00eatre mis en status pour acc\u00e9der \u00e0 la fonction."
+    },
+    "endVotingSession()":
+    {
+      "custom:event": "pour connaitre l'ancien et le nouveau status.",
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyOwner\" qui se trouve dans l'import openZeppelin,v contract ownable.Seul le owner du  contrat peut changer de status.Un workflow VotingSessionStarted doit \u00eatre mis en status pour acc\u00e9der \u00e0 la fonction."
+    },
+    "getOneProposal(uint256)":
+    {
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyVoters\".",
+      "params":
+      {
+        "_id": "l'idnetidiant de la propostion que l'on souhaite r\u00e9cup\u00e9rer."
+      },
+      "returns":
+      {
+        "_0": "_id l'identifiant du la proposition"
+      }
+    },
+    "getVoter(address)":
+    {
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyVoters\".",
+      "params":
+      {
+        "_addr": "l'adresse du voter que l'on souhaite r\u00e9cup\u00e9rer."
+      },
+      "returns":
+      {
+        "_0": "_addr l'adresse du voter"
+      }
+    },
+    "owner()":
+    {
+      "details": "Returns the address of the current owner."
+    },
+    "renounceOwnership()":
+    {
+      "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner."
+    },
+    "setVote(uint256)":
+    {
+      "custom:event": "pour connaitre l'adresse du voter et l'identifiant de la proposition pour laquelle il a vot\u00e9.",
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyVoters\".Seul les voters enregistr\u00e9s peuvent voter pour une proposition enregistr\u00e9e.Un workflow VotingSessionStarted doit \u00eatre mis en status pour acc\u00e9der \u00e0 la fonction.Un voter ne peut pas voter plus d'une fois.Un vote n'est pris en compte que si la proposition existe.le vote pour la proposition est envoy\u00e9 dans la structure du voter et la proposition prend un +1 vote dans sa structure.",
+      "params":
+      {
+        "_id": "Est l'identifiant de la proposition pour laquelle un voter vote."
+      }
+    },
+    "startProposalsRegistering()":
+    {
+      "custom:event": "pour connaitre l'ancien et le nouveau status.",
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyOwner\" qui se trouve dans l'import openZeppelin,v contract ownable.Seul le owner du  contrat peut changer de status.Un workflow RegisteringVoters doit \u00eatre mis en status pour acc\u00e9der \u00e0 la fonction."
+    },
+    "startVotingSession()":
+    {
+      "custom:event": "pour connaitre l'ancien et le nouveau status.",
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyOwner\" qui se trouve dans l'import openZeppelin,v contract ownable.Seul le owner du  contrat peut changer de status.Un workflow ProposalsRegistrationEnded doit \u00eatre mis en status pour acc\u00e9der \u00e0 la fonction."
+    },
+    "tallyVotes()":
+    {
+      "custom:event": "pour connaitre l'ancien et le nouveau status.",
+      "details": "La function prend le param\u00e8tre d'un modifier \"onlyOwner\" qui se trouve dans l'import openZeppelin,v contract ownable.Seul le owner du  contrat peut demander le compte des votes.Un workflow VotingSessionEnded doit \u00eatre mis en status pour acc\u00e9der \u00e0 la fonction.Boucle pour rechercher la proposition ayant le plus de vote"
+    },
+    "transferOwnership(address)":
+    {
+      "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+    }
+  },
+  "title": "Une application de vote",
+  "version": 1
+}
