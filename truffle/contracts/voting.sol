@@ -52,7 +52,7 @@ contract Voting is Ownable {
     /// @notice Permettre de récupérer la structure d'un voter par son adresse.
     /// @dev La function prend le paramètre d'un modifier "onlyVoters".
     /// @param _addr l'adresse du voter que l'on souhaite récupérer.
-    /// @return _addr l'adresse du voter
+    /// @return _addr l'adresse du voter se trouvant dans la structure
 
     function getVoter(address _addr) external onlyVoters view returns (Voter memory) {
         return voters[_addr];
@@ -61,7 +61,7 @@ contract Voting is Ownable {
     /// @notice Permettre de récupérer la structure d'une proposition par son identifiant.
     /// @dev La function prend le paramètre d'un modifier "onlyVoters".
     /// @param _id l'idnetidiant de la propostion que l'on souhaite récupérer.
-    /// @return _id l'identifiant du la proposition
+    /// @return _id l'identifiant du la proposition se trouvant dans la structure
     
     function getOneProposal(uint _id) external onlyVoters view returns (Proposal memory) {
         return proposalsArray[_id];
@@ -71,7 +71,7 @@ contract Voting is Ownable {
     // ::::::::::::: REGISTRATION ::::::::::::: // 
 
     /// @notice Permettre l'ajout d'un voter la structure d'un voter par son adresse.
-    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin,v contract ownable.
+    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin.
     /// @dev Seul l'émetteur du contrat peut rentrer un voter.
     /// @dev Un workflow RegisteringVoters doit être mis en status pour accéder à la fonction.
     /// @dev Un voter ne peut être enregistré qu'une seule fois.
@@ -136,7 +136,7 @@ contract Voting is Ownable {
     // ::::::::::::: STATE ::::::::::::: //
 
     /// @notice Permettre de changer le status pour ProposalsRegistrationStarted.
-    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin,v contract ownable.
+    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin.
     /// @dev Seul le owner du  contrat peut changer de status.
     /// @dev Un workflow RegisteringVoters doit être mis en status pour accéder à la fonction.
     /// @custom:event pour connaitre l'ancien et le nouveau status.
@@ -148,7 +148,7 @@ contract Voting is Ownable {
     }
 
     /// @notice Permettre de changer le status pour ProposalsRegistrationEnded.
-    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin,v contract ownable.
+    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin.
     /// @dev Seul le owner du  contrat peut changer de status.
     /// @dev Un workflow ProposalsRegistrationStarted doit être mis en status pour accéder à la fonction.
     /// @custom:event pour connaitre l'ancien et le nouveau status.
@@ -159,8 +159,8 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded);
     }
 
-    /// @notice Permettre de changer le status pour ProposalsRegistrationStarted.
-    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin,v contract ownable.
+    /// @notice Permettre de changer le status pour VotingSessionStarted.
+    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin.
     /// @dev Seul le owner du  contrat peut changer de status.
     /// @dev Un workflow ProposalsRegistrationEnded doit être mis en status pour accéder à la fonction.
     /// @custom:event pour connaitre l'ancien et le nouveau status.
@@ -171,8 +171,8 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationEnded, WorkflowStatus.VotingSessionStarted);
     }
 
-    /// @notice Permettre de changer le status pour ProposalsRegistrationStarted.
-    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin,v contract ownable.
+    /// @notice Permettre de changer le status pour VotingSessionEnded.
+    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin.
     /// @dev Seul le owner du  contrat peut changer de status.
     /// @dev Un workflow VotingSessionStarted doit être mis en status pour accéder à la fonction.
     /// @custom:event pour connaitre l'ancien et le nouveau status.
@@ -184,7 +184,7 @@ contract Voting is Ownable {
     }
 
     /// @notice Permettre de compter les votes pour déterminer la proposition gagnante.
-    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin,v contract ownable.
+    /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin.
     /// @dev Seul le owner du  contrat peut demander le compte des votes.
     /// @dev Un workflow VotingSessionEnded doit être mis en status pour accéder à la fonction.
     /// @dev Boucle pour rechercher la proposition ayant le plus de vote
