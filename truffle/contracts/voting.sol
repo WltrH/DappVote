@@ -183,6 +183,12 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
     }
 
+    function startVoterRegistering() external onlyOwner {
+        require(workflowStatus == WorkflowStatus.VotingSessionEnded, 'Voting session havent ended yet');
+        workflowStatus = WorkflowStatus.RegisteringVoters;
+        emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.RegisteringVoters);
+    }
+
     /// @notice Permettre de compter les votes pour déterminer la proposition gagnante.
     /// @dev La function prend le paramètre d'un modifier "onlyOwner" qui se trouve dans l'import openZeppelin.
     /// @dev Seul le owner du  contrat peut demander le compte des votes.

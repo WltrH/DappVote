@@ -52,27 +52,52 @@ function App () {
     setInputValue(e.target.value);
   }
 
-  function addVoter () {
-    contract.methods.addVoter(inputValue).send({from : owner});
+
+  async function addVoter () {
+    await contract.methods.addVoter(inputValue).send({from : owner});
     console.log(inputValue);
     console.log(owner);
 
-  };
+  }
 
-  function setProposal (proposal) {
+  async function addProposal () {
+    await contract.methods.addProposal(inputValue).send({from : accounts[0]});
+    console.log(inputValue);
+
+  }
+
+  async function addVoteProposal () {
+    await console.log(inputValue);
+  }
+
+  async function TallyVote () {
+    await console.methods.tallyVotes().call({from : owner});
     console.log();
 
-  };
+  }
 
-  function setVoteProposal (id) {
-    console.log();
+  //========================== STATUS ==================================
 
-  };
+  function startProposal () {
+    contract.methods.startProposalsRegistering().send({from : owner});
+  }
 
-  function WiningProposal () {
-    console.log();
+  function endProposal () {
+    contract.methods.endProposalsRegistering().send({from : owner});
+  }
 
-  };
+  function startVoting () {
+    contract.methods.startVotingSession().send({from : owner});
+  }
+
+  function endVoting () {
+    contract.methods.endVotingSession().send ({from : owner});
+  }
+
+  function startAddVoter () {
+    contract.methods.startVoterRegistering().send ({from : owner});
+  }
+
 
     if (!web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
@@ -92,12 +117,26 @@ function App () {
         <button className='btn-Voter' onClick={addVoter} >Add voter</button>
 
         <h2>Veuillez rentrer une proposition</h2>
-        <input type='text' placeholder='Paste proposition here ..'/>
-        <button className='btn-Proposal' onClick={setProposal} >Add proposal</button>
+        <input type='text' placeholder='Paste proposition here ..' onChange={(e) => changeValueInput(e)}/>
+        <button className='btn-Proposal' onClick={addProposal} >Add proposal</button>
+
 
         <h2>Veuillez rentrer votre vote</h2>
-        <input type='text' placeholder='Paste proposition that you want vote for here ..'/>
-        <button className='btn-VoteProposal' onClick={setVoteProposal} >Add VoteProposal</button>
+        <input type='text' placeholder='Paste proposition that you want vote for here ..' onChange={(e) => changeValueInput(e)}/>
+        <button className='btn-VoteProposal' onClick={addVoteProposal} >Add VoteProposal</button>
+
+        <h2>Résultat du vote</h2>
+        <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
+        
+
+        <h2>Changement de status</h2>
+
+        <button className='btn-startProposalsRegistering' onClick={startProposal} >Start Proposal</button> 
+        <button className='btn-endProposalsRegistering' onClick={endProposal} >End Proposal</button>
+        <button className='btn-startVotingSession' onClick={startVoting} >Start Voting</button> 
+        <button className='btn-endVotingSession' onClick={endVoting} >End Voting</button>
+        <button className='btn-startAddVoterSession' onClick={startAddVoter} >Start add Voter</button>
+
       </div>
     );
   
