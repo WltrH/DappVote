@@ -11,8 +11,10 @@ function App () {
   const [accounts, setAddress] = useState(null);
   const [inputValue, setInputValue] = useState(0);
   const [owner, setOwner] = useState(null);
-  const [ContractOwner, setContractOwner] = useState(null);
-  //const [statusWorkflow, setStatus] = useState(null);
+  const [winner,setWin] = useState(null);
+  //const [proposal, setProp] = useState(null);
+
+
   
 
 
@@ -29,25 +31,25 @@ function App () {
           VotingContract.abi,
           deployedNetwork && deployedNetwork.address,
         );
+        const contractOwner = await instance.methods.owner().call();
+        //const status = await contract.methods.workflowStatus().call({from: accounts[0]});
+
 
         setWeb3(web3provider);
         setAddress(accounts);
         setContract(instance);
-        setOwner(accounts[0]);
-        
+        setOwner(contractOwner);
         
         //events try
         let options = {
-          filter: {
-            value: [],
-          },
+          
           fromBlock: 0,
           toBlock: 'latest'
         };
 
         //const listAddr = await contract.getPastEvents('dataStored', options);
 
-        contract.events.Transfer(options)
+        contract.events.ProposalRegistered(options)
           .on('data', event => console.log(event))
           .on('changed', changed => console.log(changed))
           .on('error', err => {throw err})
@@ -78,15 +80,14 @@ function App () {
 
   
   async function addVoter(){
-    await contract.methods.addVoter(inputValue).send({from : owner});
-    //await contract.methods.workflowStats.call();
-    //setOwnerAddress(contractOwner)
+    await contract.methods.addVoter(inputValue).send({from : accounts[0]});
     console.log(inputValue);
     console.log(owner);
   }
 
   async function addProposal(){
-    await contract.methods.addProposal(inputValue).send({from : owner});
+    await contract.methods.addProposal(inputValue).send({from : accounts[0]});
+    //setProp (await contract.event.ProposalRegistered().call)
     console.log(inputValue);
   }
 
@@ -95,31 +96,33 @@ function App () {
   }
 
   async function TallyVote(){
-    await console.methods.tallyVotes().call({from : owner});
+    await contract.methods.tallyVotes().call({from : accounts[0]});
     console.log();
   }
- 
+  async function result (){
+    setWin (await contract.methods.winningProposalID().call({from : accounts[0]}));
+  }
   //========================== STATUS ==================================
 
 
   function startProposal () {
-    contract.methods.startProposalsRegistering().send({from : owner});
+    contract.methods.startProposalsRegistering().send({from : accounts[0]});
   }
 
   function endProposal () {
-    contract.methods.endProposalsRegistering().send({from : owner});
+    contract.methods.endProposalsRegistering().send({from : accounts[0]});
   }
 
   function startVoting () {
-    contract.methods.startVotingSession().send({from : owner});
+    contract.methods.startVotingSession().send({from : accounts[0]});
   }
 
   function endVoting () {
-    contract.methods.endVotingSession().send ({from : owner});
+    contract.methods.endVotingSession().send ({from : accounts[0]});
   }
 
   function startAddVoter () {
-    contract.methods.startVoterRegistering().send ({from : owner});
+    contract.methods.startVoterRegistering().send ({from : accounts[0]});
   }
 //========================================================================
 
@@ -133,9 +136,9 @@ function App () {
         <p>Your Truffle Box is installed and ready.</p>
         <h2>Smart Contract Example</h2>
 
-        {owner}
+        {accounts}
         <h2>TEST</h2>
-        
+        {owner}
 
         
         <h2>Veuillez rentrer un voter</h2>
@@ -152,7 +155,8 @@ function App () {
 
         <h2>Résultat du vote</h2>
         <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
-        
+        <button className='btn-Tallyvote' onClick={result} >Résultat vote</button>
+        {winner}
         
         <h2>Changement de status</h2>
         <button className='btn-startProposalsRegistering' onClick={startProposal} >Start Proposal</button> 
