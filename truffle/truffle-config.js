@@ -7,9 +7,11 @@ module.exports = {
       host: "127.0.0.1",     // Localhost (default: none)
       port: 8545,            // Standard Ethereum port (default: none)
       network_id: "*",       // Any network (default: none)
+      gas: 4600000
      },
    
     // Rajout des autres réseaux de test
+    /*
     ropsten:{
       provider : function() {return new HDWalletProvider({mnemonic:{phrase:`${process.env.MNEMONIC}`},providerOrUrl:`https://ropsten.infura.io/v3/${process.env.INFURA_ID}`,})},
       network_id:3,
@@ -23,6 +25,7 @@ module.exports = {
       network_id:80001,
       gasPrice: 7000000000,
     },
+    **/
   },
 
   // Set default mocha options here, use special reporters, etc.

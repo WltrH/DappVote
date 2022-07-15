@@ -188,3 +188,17 @@ function App() {
   );
 }
 
+async function addProposal () {
+  await contract.methods.addProposal(inputValue).send({from : accounts[0]});
+  console.log(inputValue);
+
+}
+
+async function addVoteProposal () {
+  await console.log(inputValue);
+}
+
+async function TallyVote () {
+  await console.methods.tallyVotes().call({from : owner});
+  console.log();
+}

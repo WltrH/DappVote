@@ -8,9 +8,12 @@ function App () {
   //state = { storageValue: 0, web3: null, accounts: null, contract: null, addresses: null };
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
-  const [accounts, setAccount] = useState(null);
+  const [accounts, setAddress] = useState(null);
   const [inputValue, setInputValue] = useState(0);
   const [owner, setOwner] = useState(null);
+  const [ContractOwner, setContractOwner] = useState(null);
+  //const [statusWorkflow, setStatus] = useState(null);
+  
 
 
   useEffect (() => {
@@ -28,9 +31,30 @@ function App () {
         );
 
         setWeb3(web3provider);
-        setAccount(accounts);
+        setAddress(accounts);
         setContract(instance);
         setOwner(accounts[0]);
+        
+        
+        //events try
+        let options = {
+          filter: {
+            value: [],
+          },
+          fromBlock: 0,
+          toBlock: 'latest'
+        };
+
+        //const listAddr = await contract.getPastEvents('dataStored', options);
+
+        contract.events.Transfer(options)
+          .on('data', event => console.log(event))
+          .on('changed', changed => console.log(changed))
+          .on('error', err => {throw err})
+          .on('connected', str => console.log(str))
+
+
+
       }
       catch (error) {
         // Catch any errors for any of the above operations.
@@ -48,35 +72,35 @@ function App () {
   //faire les fonctions pour interagir avec le contrat
 
   function changeValueInput(e){
-    //console.log(e.target.value);
+    console.log(e.target.value);
     setInputValue(e.target.value);
   }
 
-
-  async function addVoter () {
+  
+  async function addVoter(){
     await contract.methods.addVoter(inputValue).send({from : owner});
+    //await contract.methods.workflowStats.call();
+    //setOwnerAddress(contractOwner)
     console.log(inputValue);
     console.log(owner);
-
   }
 
-  async function addProposal () {
-    await contract.methods.addProposal(inputValue).send({from : accounts[0]});
+  async function addProposal(){
+    await contract.methods.addProposal(inputValue).send({from : owner});
     console.log(inputValue);
-
   }
 
-  async function addVoteProposal () {
+  async function addVoteProposal(){
     await console.log(inputValue);
   }
 
-  async function TallyVote () {
+  async function TallyVote(){
     await console.methods.tallyVotes().call({from : owner});
     console.log();
-
   }
-
+ 
   //========================== STATUS ==================================
+
 
   function startProposal () {
     contract.methods.startProposalsRegistering().send({from : owner});
@@ -97,7 +121,7 @@ function App () {
   function startAddVoter () {
     contract.methods.startVoterRegistering().send ({from : owner});
   }
-
+//========================================================================
 
     if (!web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
@@ -110,6 +134,8 @@ function App () {
         <h2>Smart Contract Example</h2>
 
         {owner}
+        <h2>TEST</h2>
+        
 
         
         <h2>Veuillez rentrer un voter</h2>
@@ -119,8 +145,7 @@ function App () {
         <h2>Veuillez rentrer une proposition</h2>
         <input type='text' placeholder='Paste proposition here ..' onChange={(e) => changeValueInput(e)}/>
         <button className='btn-Proposal' onClick={addProposal} >Add proposal</button>
-
-
+       
         <h2>Veuillez rentrer votre vote</h2>
         <input type='text' placeholder='Paste proposition that you want vote for here ..' onChange={(e) => changeValueInput(e)}/>
         <button className='btn-VoteProposal' onClick={addVoteProposal} >Add VoteProposal</button>
@@ -128,15 +153,15 @@ function App () {
         <h2>Résultat du vote</h2>
         <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
         
-
+        
         <h2>Changement de status</h2>
-
         <button className='btn-startProposalsRegistering' onClick={startProposal} >Start Proposal</button> 
         <button className='btn-endProposalsRegistering' onClick={endProposal} >End Proposal</button>
         <button className='btn-startVotingSession' onClick={startVoting} >Start Voting</button> 
         <button className='btn-endVotingSession' onClick={endVoting} >End Voting</button>
         <button className='btn-startAddVoterSession' onClick={startAddVoter} >Start add Voter</button>
-
+        
+        
       </div>
     );
   
