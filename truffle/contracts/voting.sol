@@ -38,7 +38,7 @@ contract Voting is Ownable {
 
     event VoterRegistered(address voterAddress); 
     event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
-    event ProposalRegistered(uint proposalId);
+    event ProposalRegistered(uint proposalId, string descPropal);
     event Voted (address voter, uint proposalId);
 
     modifier onlyVoters() {
@@ -107,7 +107,7 @@ contract Voting is Ownable {
         Proposal memory proposal;
         proposal.description = _desc;
         proposalsArray.push(proposal);
-        emit ProposalRegistered(proposalsArray.length-1);
+        emit ProposalRegistered(proposalsArray.length-1, _desc);
     }
 
     // ::::::::::::: VOTE ::::::::::::: //

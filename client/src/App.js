@@ -12,7 +12,12 @@ function App () {
   const [inputValue, setInputValue] = useState(0);
   const [owner, setOwner] = useState(null);
   const [winner,setWin] = useState(null);
+  const [voterArray, setVoterA] = useState([]);
   const [propalArray, setProposalA] = useState([]);
+  const [votedIdArray, setVotedIdA] = useState([]);
+  const [workf, setWork] = useState (0);
+  
+
   
 
   useEffect (() => {
@@ -29,35 +34,47 @@ function App () {
           deployedNetwork && deployedNetwork.address,
         );
         const contractOwner = await instance.methods.owner().call();
-        //const status = await contract.methods.workflowStatus().call({from: accounts[0]});
+        setWork (await instance.methods.workflowStatus().call({from: accounts[0]}));
+        console.log(workf);
+        
+        //events try
+        let options = {
+          fromBlock: 0,
+          toBlock: 'latest'
+        };
 
+        let options1 = {
+          fromBlock: 0,                 
+        };
+      
+        let listAddress = await instance.getPastEvents('VoterRegistered', options);
+      
+        instance.events.VoterRegistered(options1)
+            .on('data', event => listAddress.push(event));
 
+        let listId = await instance.getPastEvents('ProposalRegistered', options);
+        instance.events.ProposalRegistered(options1)
+            .on('data', event => listAddress.push(event));
 
+        let listVote = await instance.getPastEvents('Voted', options);
+        instance.events.Voted(options1)
+            .on('data', event => listAddress.push(event));
+
+        
+        
+        
         setWeb3(web3provider);
         setAddress(accounts);
         setContract(instance);
         setOwner(contractOwner);
+        setVoterA(listAddress);
+        setProposalA(listId);
+        setVotedIdA(listVote);
+
+        console.log(contract);
+        console.log(web3);
 
         
-               //events try
-               let options = {
-                fromBlock: 0,
-                toBlock: 'latest'
-              };
-
-              let options1 = {
-                fromBlock: 0,                 
-              };
-      
-              let listAddress = await instance.getPastEvents('VoterRegistered', options);
-      
-              instance.events.VoterRegistered(options1)
-                  .on('data', event => listAddress.push(event));
-          
-        setProposalA(listAddress);
-
-
-
       }
       catch (error) {
         // Catch any errors for any of the above operations.
@@ -70,8 +87,11 @@ function App () {
      }
      console.log(contract);
      console.log(web3);
+     console.log(workf);
   });
-  
+  console.log(contract);
+  console.log(web3);
+  console.log(workf);
   //faire les fonctions pour interagir avec le contrat
 
   function changeValueInput(e){
@@ -97,15 +117,38 @@ function App () {
   }
 
   async function TallyVote(){
+
     await contract.methods.tallyVotes().call({from : accounts[0]});
-    setWin (await contract.methods.winningProposalID().call({from : accounts[0]}));
+    const winProposal = await contract.methods.winningProposalID().call({from : accounts[0]});
+    setWin (winProposal);
+    console.log("Vote constante winningProposal",winProposal);
+    console.log("Vote constante winner",winner);
   }
+
+
+
+
+//========================== TRY TallyVote ==================================
+
+  useEffect(() => {
+    if (contract) {
+        getWinningProposal();
+    }
+  },[])
+
+  async function getWinningProposal() {
+    console.log(accounts[0]);
+    const id =  await contract.methods.winningProposalID().call({ from: accounts[0] });
+    setWin(id);
+} 
 
   //========================== STATUS ==================================
 
 
   function startProposal () {
     contract.methods.startProposalsRegistering().send({from : accounts[0]});
+    //const workf = await contract.methods.workflowStatus().call({from : accounts[0]});
+    //console.log(workf);
   }
 
   function endProposal () {
@@ -152,7 +195,7 @@ function App () {
           <tbody>
               <tr>
                 <td>adress votant</td>
-                {propalArray.map((adresse) => (
+                {voterArray.map((adresse) => (
                   <tr><td>{adresse.returnValues.voterAddress} </td></tr>
                 ))}
               </tr>
@@ -171,7 +214,13 @@ function App () {
           <tbody>
               <tr>
                 <td>id</td>
-                <td>nom proposiition</td>
+                {propalArray.map((adresse) => (
+                  <tr><td>{adresse.returnValues.proposalId} </td></tr>
+                ))}
+                <td>nom proposition</td>
+                {propalArray.map((adresse) => (
+                  <tr><td>{adresse.returnValues.descPropal}</td></tr>
+                ))}
               </tr>
           </tbody>
         </table>
@@ -179,9 +228,22 @@ function App () {
         <h2>Veuillez rentrer votre vote</h2>
         <input type='text' placeholder='Paste proposition that you want vote for here ..' onChange={(e) => changeValueInput(e)}/>
         <button className='btn-VoteProposal' onClick={addVoteProposal} >Add VoteProposal</button>
+        <table>
+          <thead>
+            <tbody>
+              <tr>
+                <td>Vote effectué</td>
+                {votedIdArray.map((adresse) => (
+                  <tr><td>{adresse.returnValues.voter} {adresse.returnValues.proposalId} </td></tr>
+                ))}
+              </tr>
+            </tbody>
+          </thead>
+
+        </table>
 
         <h2>Résultat du vote</h2>
-        <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
+        <button className='btn-Tallyvote' onClick={getWinningProposal} >Résultat vote</button>
         {winner}
         
         <h2>Changement de status</h2>
