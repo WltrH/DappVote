@@ -81,7 +81,7 @@ contract Voting is Ownable {
     function addVoter(address _addr) external onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, 'Voters registration is not open yet');
         require(voters[_addr].isRegistered != true, 'Already registered');
-        require(proposalsArray.length <= 100, "you reach the maximum proposal" );
+        require(proposalsArray.length <= 100, 'you reach the maximum proposal');
         voters[_addr].isRegistered = true;
         emit VoterRegistered(_addr);
     }

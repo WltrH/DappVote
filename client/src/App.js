@@ -11,7 +11,7 @@ function App () {
   const [accounts, setAddress] = useState(null);
   const [inputValue, setInputValue] = useState(0);
   const [owner, setOwner] = useState(null);
-  const [winner,setWin] = useState(null);
+  const [winner,setWin] = useState("");
   const [voterArray, setVoterA] = useState([]);
   const [propalArray, setProposalA] = useState([]);
   const [votedIdArray, setVotedIdA] = useState([]);
@@ -47,18 +47,17 @@ function App () {
           fromBlock: 0,                 
         };
       
-        let listAddress = await instance.getPastEvents('VoterRegistered', options);
-      
+        let listAddress = await instance.getPastEvents('VoterRegistered', options1);
         instance.events.VoterRegistered(options1)
             .on('data', event => listAddress.push(event));
 
-        let listId = await instance.getPastEvents('ProposalRegistered', options);
+        let listId = await instance.getPastEvents('ProposalRegistered', options1);
         instance.events.ProposalRegistered(options1)
-            .on('data', event => listAddress.push(event));
+            .on('data', event => listId.push(event));
 
-        let listVote = await instance.getPastEvents('Voted', options);
+        let listVote = await instance.getPastEvents('Voted', options1);
         instance.events.Voted(options1)
-            .on('data', event => listAddress.push(event));
+            .on('data', event => listVote.push(event));
 
         
         
@@ -130,17 +129,7 @@ function App () {
 
 //========================== TRY TallyVote ==================================
 
-  useEffect(() => {
-    if (contract) {
-        getWinningProposal();
-    }
-  },[])
 
-  async function getWinningProposal() {
-    console.log(accounts[0]);
-    const id =  await contract.methods.winningProposalID().call({ from: accounts[0] });
-    setWin(id);
-} 
 
   //========================== STATUS ==================================
 
@@ -166,7 +155,7 @@ function App () {
   function startAddVoter () {
     contract.methods.startVoterRegistering().send ({from : accounts[0]});
   }
-//========================================================================
+//================================Page Web========================================
 
     if (!web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
@@ -243,8 +232,10 @@ function App () {
         </table>
 
         <h2>Résultat du vote</h2>
-        <button className='btn-Tallyvote' onClick={getWinningProposal} >Résultat vote</button>
+        <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
         {winner}
+
+        {workf}
         
         <h2>Changement de status</h2>
         <button className='btn-startProposalsRegistering' onClick={startProposal} >Start Proposal</button> 
