@@ -12,11 +12,8 @@ function App () {
   const [inputValue, setInputValue] = useState(0);
   const [owner, setOwner] = useState(null);
   const [winner,setWin] = useState(null);
-  //const [proposal, setProp] = useState(null);
-
-
+  const [propalArray, setProposalA] = useState([]);
   
-
 
   useEffect (() => {
      setupWeb3 ();
@@ -35,25 +32,29 @@ function App () {
         //const status = await contract.methods.workflowStatus().call({from: accounts[0]});
 
 
+
         setWeb3(web3provider);
         setAddress(accounts);
         setContract(instance);
         setOwner(contractOwner);
+
         
-        //events try
-        let options = {
+               //events try
+               let options = {
+                fromBlock: 0,
+                toBlock: 'latest'
+              };
+
+              let options1 = {
+                fromBlock: 0,                 
+              };
+      
+              let listAddress = await instance.getPastEvents('VoterRegistered', options);
+      
+              instance.events.VoterRegistered(options1)
+                  .on('data', event => listAddress.push(event));
           
-          fromBlock: 0,
-          toBlock: 'latest'
-        };
-
-        //const listAddr = await contract.getPastEvents('dataStored', options);
-
-        contract.events.ProposalRegistered(options)
-          .on('data', event => console.log(event))
-          .on('changed', changed => console.log(changed))
-          .on('error', err => {throw err})
-          .on('connected', str => console.log(str))
+        setProposalA(listAddress);
 
 
 
@@ -67,14 +68,13 @@ function App () {
 
       }
      }
-     console.log(web3);
      console.log(contract);
+     console.log(web3);
   });
   
   //faire les fonctions pour interagir avec le contrat
 
   function changeValueInput(e){
-    console.log(e.target.value);
     setInputValue(e.target.value);
   }
 
@@ -87,21 +87,20 @@ function App () {
 
   async function addProposal(){
     await contract.methods.addProposal(inputValue).send({from : accounts[0]});
-    //setProp (await contract.event.ProposalRegistered().call)
+    //setProposalA (await contract.event.ProposalRegistered().call)
     console.log(inputValue);
   }
 
   async function addVoteProposal(){
+    await contract.methods.setVote(inputValue).send({from : accounts[0]});
     await console.log(inputValue);
   }
 
   async function TallyVote(){
     await contract.methods.tallyVotes().call({from : accounts[0]});
-    console.log();
-  }
-  async function result (){
     setWin (await contract.methods.winningProposalID().call({from : accounts[0]}));
   }
+
   //========================== STATUS ==================================
 
 
@@ -137,17 +136,45 @@ function App () {
         <h2>Smart Contract Example</h2>
 
         {accounts}
-        <h2>TEST</h2>
+        <h2>Owner du Contract</h2>
         {owner}
 
         
         <h2>Veuillez rentrer un voter</h2>
         <input type='text' placeholder='Paste address here ..' onChange={(e) => changeValueInput(e)} />
         <button className='btn-Voter' onClick={addVoter} >Add voter</button>
+        <table>
+          <thead>
+              <tr>
+                <th colspan="2">tableau votant</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                <td>adress votant</td>
+                {propalArray.map((adresse) => (
+                  <tr><td>{adresse.returnValues.voterAddress} </td></tr>
+                ))}
+              </tr>
+          </tbody>
+        </table>
 
         <h2>Veuillez rentrer une proposition</h2>
         <input type='text' placeholder='Paste proposition here ..' onChange={(e) => changeValueInput(e)}/>
         <button className='btn-Proposal' onClick={addProposal} >Add proposal</button>
+        <table>
+          <thead>
+              <tr>
+                <th colspan="2">tableau proposition</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                <td>id</td>
+                <td>nom proposiition</td>
+              </tr>
+          </tbody>
+        </table>
        
         <h2>Veuillez rentrer votre vote</h2>
         <input type='text' placeholder='Paste proposition that you want vote for here ..' onChange={(e) => changeValueInput(e)}/>
@@ -155,7 +182,6 @@ function App () {
 
         <h2>Résultat du vote</h2>
         <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
-        <button className='btn-Tallyvote' onClick={result} >Résultat vote</button>
         {winner}
         
         <h2>Changement de status</h2>
