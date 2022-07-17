@@ -40,6 +40,7 @@ contract Voting is Ownable {
     event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
     event ProposalRegistered(uint proposalId, string descPropal);
     event Voted (address voter, uint proposalId);
+    event idVoted(uint winId);
 
     modifier onlyVoters() {
         require(voters[msg.sender].isRegistered, "You're not a voter");
@@ -208,5 +209,6 @@ contract Voting is Ownable {
        
        workflowStatus = WorkflowStatus.VotesTallied;
        emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.VotesTallied);
+       emit idVoted (_winningProposalId);
     }
 }

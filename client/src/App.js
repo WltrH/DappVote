@@ -16,6 +16,7 @@ function App () {
   const [propalArray, setProposalA] = useState([]);
   const [votedIdArray, setVotedIdA] = useState([]);
   const [workf, setWork] = useState (0);
+
   
 
   
@@ -36,28 +37,60 @@ function App () {
         const contractOwner = await instance.methods.owner().call();
         setWork (await instance.methods.workflowStatus().call({from: accounts[0]}));
         console.log(workf);
+        //let text = (null);
+
+
+        switch (workf){
+          case 0:
+            console.log("Enregistrement des votes");
+            break;
+          case 1:
+            console.log("Enregistrement proposition ouverte");
+            break;
+          case 2:
+            console.log("Enregistrement proposition fermé"); 
+            break;
+          case 3:
+            console.log("Début de la votation");
+            break;
+          case 4:
+            console.log("Votation fermé");
+            break;
+          case 5:
+            console.log("Comptage des votes");
+            break;
+          default:
+            console.log("Enregistrement des voters");
+        }
         
         //events try
+
         let options = {
           fromBlock: 0,
           toBlock: 'latest'
         };
-
+        
         let options1 = {
           fromBlock: 0,                 
         };
-      
-        let listAddress = await instance.getPastEvents('VoterRegistered', options1);
-        instance.events.VoterRegistered(options1)
+
+        let listAddress = await instance.getPastEvents('VoterRegistered', options);
+        let listId = await instance.getPastEvents('ProposalRegistered', options1);
+        let listVote = await instance.getPastEvents('Voted', options1);
+
+        
+        instance.events.VoterRegistered(options)
             .on('data', event => listAddress.push(event));
 
-        let listId = await instance.getPastEvents('ProposalRegistered', options1);
         instance.events.ProposalRegistered(options1)
             .on('data', event => listId.push(event));
 
-        let listVote = await instance.getPastEvents('Voted', options1);
         instance.events.Voted(options1)
             .on('data', event => listVote.push(event));
+
+        instance.events.idVoted(options1)
+            .on('data', event => console.log('ICI ID VOTE GAGNANT' ,event));
+          
 
         
         
@@ -84,13 +117,11 @@ function App () {
 
       }
      }
-     console.log(contract);
-     console.log(web3);
-     console.log(workf);
+
   });
-  console.log(contract);
-  console.log(web3);
-  console.log(workf);
+  console.log("contract :",contract);
+  console.log("web3 :",web3);
+  console.log("Worflow :",workf);
   //faire les fonctions pour interagir avec le contrat
 
   function changeValueInput(e){
@@ -124,10 +155,6 @@ function App () {
     console.log("Vote constante winner",winner);
   }
 
-
-
-
-//========================== TRY TallyVote ==================================
 
 
 
@@ -225,6 +252,7 @@ function App () {
                 {votedIdArray.map((adresse) => (
                   <tr><td>{adresse.returnValues.voter} {adresse.returnValues.proposalId} </td></tr>
                 ))}
+                
               </tr>
             </tbody>
           </thead>
@@ -235,7 +263,7 @@ function App () {
         <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
         {winner}
 
-        {workf}
+       
         
         <h2>Changement de status</h2>
         <button className='btn-startProposalsRegistering' onClick={startProposal} >Start Proposal</button> 
@@ -243,7 +271,7 @@ function App () {
         <button className='btn-startVotingSession' onClick={startVoting} >Start Voting</button> 
         <button className='btn-endVotingSession' onClick={endVoting} >End Voting</button>
         <button className='btn-startAddVoterSession' onClick={startAddVoter} >Start add Voter</button>
-        
+        {workf}
         
       </div>
     );
