@@ -118,7 +118,7 @@ function App () {
       }
      }
 
-  });
+  }, []);
   console.log("contract :",contract);
   console.log("web3 :",web3);
   console.log("Worflow :",workf);
