@@ -148,7 +148,7 @@ function App () {
 
   async function TallyVote(){
 
-    await contract.methods.tallyVotes().call({from : accounts[0]});
+    await contract.methods.tallyVotes().send({from : accounts[0]});
     const winProposal = await contract.methods.winningProposalID().call({from : accounts[0]});
     setWin (winProposal);
     console.log("Vote constante winningProposal",winProposal);
