@@ -40,28 +40,7 @@ function App () {
         //let text = (null);
 
 
-        switch (workf){
-          case 0:
-            console.log("Enregistrement des votes");
-            break;
-          case 1:
-            console.log("Enregistrement proposition ouverte");
-            break;
-          case 2:
-            console.log("Enregistrement proposition fermé"); 
-            break;
-          case 3:
-            console.log("Début de la votation");
-            break;
-          case 4:
-            console.log("Votation fermé");
-            break;
-          case 5:
-            console.log("Comptage des votes");
-            break;
-          default:
-            console.log("Enregistrement des voters");
-        }
+        
         
         //events try
 
@@ -122,6 +101,15 @@ function App () {
   console.log("contract :",contract);
   console.log("web3 :",web3);
   console.log("Worflow :",workf);
+
+  
+/**
+ * useEffect (() => {
+  }, []);
+ */
+  
+
+
   //faire les fonctions pour interagir avec le contrat
 
   function changeValueInput(e){
@@ -179,9 +167,6 @@ function App () {
     contract.methods.endVotingSession().send ({from : accounts[0]});
   }
 
-  function startAddVoter () {
-    contract.methods.startVoterRegistering().send ({from : accounts[0]});
-  }
 //================================Page Web========================================
 
     if (!web3) {
@@ -270,7 +255,6 @@ function App () {
         <button className='btn-endProposalsRegistering' onClick={endProposal} >End Proposal</button>
         <button className='btn-startVotingSession' onClick={startVoting} >Start Voting</button> 
         <button className='btn-endVotingSession' onClick={endVoting} >End Voting</button>
-        <button className='btn-startAddVoterSession' onClick={startAddVoter} >Start add Voter</button>
         {workf}
         
       </div>
