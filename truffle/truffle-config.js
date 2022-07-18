@@ -11,7 +11,7 @@ module.exports = {
      },
    
     // Rajout des autres réseaux de test
-    /*
+    
     ropsten:{
       provider : function() {return new HDWalletProvider({mnemonic:{phrase:`${process.env.MNEMONIC}`},providerOrUrl:`https://ropsten.infura.io/v3/${process.env.INFURA_ID}`,})},
       network_id:3,
@@ -25,7 +25,7 @@ module.exports = {
       network_id:80001,
       gasPrice: 7000000000,
     },
-    **/
+
   },
 
   // Set default mocha options here, use special reporters, etc.

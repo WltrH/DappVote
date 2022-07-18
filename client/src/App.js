@@ -15,7 +15,7 @@ function App () {
   const [voterArray, setVoterA] = useState([]);
   const [propalArray, setProposalA] = useState([]);
   const [votedIdArray, setVotedIdA] = useState([]);
-  const [workf, setWork] = useState (0);
+  const [workf, setWork] = useState ("registering voters");
 
   
 
@@ -35,52 +35,13 @@ function App () {
           deployedNetwork && deployedNetwork.address,
         );
         const contractOwner = await instance.methods.owner().call();
-        setWork (await instance.methods.workflowStatus().call({from: accounts[0]}));
-        console.log(workf);
         //let text = (null);
-
-
-        
-        
-        //events try
-
-        let options = {
-          fromBlock: 0,
-          toBlock: 'latest'
-        };
-        
-        let options1 = {
-          fromBlock: 0,                 
-        };
-
-        let listAddress = await instance.getPastEvents('VoterRegistered', options);
-        let listId = await instance.getPastEvents('ProposalRegistered', options1);
-        let listVote = await instance.getPastEvents('Voted', options1);
-
-        
-        instance.events.VoterRegistered(options)
-            .on('data', event => listAddress.push(event));
-
-        instance.events.ProposalRegistered(options1)
-            .on('data', event => listId.push(event));
-
-        instance.events.Voted(options1)
-            .on('data', event => listVote.push(event));
-
-        instance.events.idVoted(options1)
-            .on('data', event => console.log('ICI ID VOTE GAGNANT' ,event));
-          
-
-        
-        
         
         setWeb3(web3provider);
         setAddress(accounts);
         setContract(instance);
         setOwner(contractOwner);
-        setVoterA(listAddress);
-        setProposalA(listId);
-        setVotedIdA(listVote);
+
 
         console.log(contract);
         console.log(web3);
@@ -103,11 +64,87 @@ function App () {
   console.log("Worflow :",workf);
 
   
-/**
- * useEffect (() => {
-  }, []);
- */
+
+ useEffect (() => {
+
+  async function setEvent() {
+    if (contract){
+
+      let options = {
+        fromBlock: 0,
+        toBlock: 'latest'
+      };
+    
+      let options1 = {
+        fromBlock: 0,                 
+      };
   
+      let listAddress = await contract.getPastEvents('VoterRegistered', options);
+      let listId = await contract.getPastEvents('ProposalRegistered', options1);
+      let listVote = await contract.getPastEvents('Voted', options1);
+  
+    
+        contract.events.VoterRegistered(options)
+          .on('data', event => listAddress.push(event));
+  
+        contract.events.ProposalRegistered(options1)
+          .on('data', event => listId.push(event));
+  
+        contract.events.Voted(options1)
+          .on('data', event => listVote.push(event));
+  
+        contract.events.idVoted(options1)
+          .on('data', event => console.log('ICI ID VOTE GAGNANT' ,event));
+  
+  
+  
+        setVoterA(listAddress);
+        setProposalA(listId);
+        setVotedIdA(listVote);
+    }
+      
+
+  }  
+    setEvent();
+  }, []);
+
+  useEffect (() => {
+    updateWorflowStatus();
+  }, []);
+
+  async function updateWorflowStatus (){
+      if(contract){
+        const idStatus = await contract.methods.workflowStatus().call({from: accounts[0]});
+        textStatus(idStatus);
+      }
+  }
+
+  function textStatus(id) {
+    switch(id) {
+      case "0":
+        setWork("Regestering Voters");
+        break;
+      case "1":
+        setWork("Proposals registration started");
+        break;
+      case "2":
+       setWork("Proposals registering ended");
+       break;
+      case "3":
+        setWork("Voting session started");
+        break;
+      case "4":
+        setWork("Voting session ended");
+        break;
+      case "5":
+       setWork("Vote tallied");
+       break;
+      default:
+        setWork("Status error")
+    }
+  }
+
+  window.onload = updateWorflowStatus();
 
 
   //faire les fonctions pour interagir avec le contrat
@@ -125,7 +162,6 @@ function App () {
 
   async function addProposal(){
     await contract.methods.addProposal(inputValue).send({from : accounts[0]});
-    //setProposalA (await contract.event.ProposalRegistered().call)
     console.log(inputValue);
   }
 
@@ -151,8 +187,6 @@ function App () {
 
   function startProposal () {
     contract.methods.startProposalsRegistering().send({from : accounts[0]});
-    //const workf = await contract.methods.workflowStatus().call({from : accounts[0]});
-    //console.log(workf);
   }
 
   function endProposal () {
@@ -172,7 +206,7 @@ function App () {
     if (!web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
-    
+     
     return (
       <div className="App">
         <h1>Good to Go!</h1>
@@ -183,25 +217,24 @@ function App () {
         <h2>Owner du Contract</h2>
         {owner}
 
-        
+        <h2>Workflow status</h2>
+        {workf}
         <h2>Veuillez rentrer un voter</h2>
         <input type='text' placeholder='Paste address here ..' onChange={(e) => changeValueInput(e)} />
         <button className='btn-Voter' onClick={addVoter} >Add voter</button>
         <table>
-          <thead>
-              <tr>
-                <th colspan="2">tableau votant</th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr>
-                <td>adress votant</td>
-                {voterArray.map((adresse) => (
+          <caption>Voters enregistrés</caption>
+         
+          <tr>
+            <th>Address Voters</th>
+           </tr>
+           <tr>
+           {voterArray.map((adresse) => (
                   <tr><td>{adresse.returnValues.voterAddress} </td></tr>
                 ))}
-              </tr>
-          </tbody>
+          </tr>
         </table>
+        
 
         <h2>Veuillez rentrer une proposition</h2>
         <input type='text' placeholder='Paste proposition here ..' onChange={(e) => changeValueInput(e)}/>
@@ -209,21 +242,25 @@ function App () {
         <table>
           <thead>
               <tr>
-                <th colspan="2">tableau proposition</th>
+                <th colSpan="2">tableau proposition</th>
               </tr>
           </thead>
-          <tbody>
-              <tr>
-                <td>id</td>
-                {propalArray.map((adresse) => (
-                  <tr><td>{adresse.returnValues.proposalId} </td></tr>
-                ))}
-                <td>nom proposition</td>
-                {propalArray.map((adresse) => (
-                  <tr><td>{adresse.returnValues.descPropal}</td></tr>
-                ))}
-              </tr>
-          </tbody>
+
+          <caption>Tableau des propositions</caption>
+            <tr>
+              <th>Identifiant</th>
+              <th>Proposition</th>
+            </tr>
+
+            <tr>
+            {propalArray.map((adresse) => (
+                <td>{adresse.returnValues.proposalId} </td>
+              ))}
+           
+            {propalArray.map((adresse) => (
+                <td>{adresse.returnValues.descPropal}</td>
+              ))}
+            </tr>
         </table>
        
         <h2>Veuillez rentrer votre vote</h2>
@@ -247,19 +284,16 @@ function App () {
         <h2>Résultat du vote</h2>
         <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
         {winner}
-
-       
         
         <h2>Changement de status</h2>
         <button className='btn-startProposalsRegistering' onClick={startProposal} >Start Proposal</button> 
         <button className='btn-endProposalsRegistering' onClick={endProposal} >End Proposal</button>
         <button className='btn-startVotingSession' onClick={startVoting} >Start Voting</button> 
         <button className='btn-endVotingSession' onClick={endVoting} >End Voting</button>
-        {workf}
         
       </div>
     );
-  
+   
 }
 
 export default App;
