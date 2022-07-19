@@ -82,7 +82,6 @@ contract Voting is Ownable {
     function addVoter(address _addr) external onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, 'Voters registration is not open yet');
         require(voters[_addr].isRegistered != true, 'Already registered');
-        require(proposalsArray.length <= 100, 'you reach the maximum proposal');
         voters[_addr].isRegistered = true;
         emit VoterRegistered(_addr);
     }
@@ -102,6 +101,7 @@ contract Voting is Ownable {
     function addProposal(string memory _desc) external onlyVoters {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, 'Proposals are not allowed yet');
         require(keccak256(abi.encode(_desc)) != keccak256(abi.encode("")), 'Vous ne pouvez pas ne rien proposer'); // facultatif
+        require(proposalsArray.length <= 100, 'you reach the maximum proposal');
 
         // voir que desc est different des autres
 

@@ -257,16 +257,13 @@ function App () {
           </thead>
 
           <caption>Tableau des propositions</caption>
-            <tr>
-              <th>Identifiant</th>
-              <th>Proposition</th>
-            </tr>
 
             <tr>
             {propalArray.map((adresse) => (
                 <td>{adresse.returnValues.proposalId} </td>
               ))}
-           
+            </tr>
+            <tr>
             {propalArray.map((adresse) => (
                 <td>{adresse.returnValues.descPropal}</td>
               ))}
@@ -292,7 +289,8 @@ function App () {
         </table>
 
         <h2>Résultat du vote</h2>
-        <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
+        
+        {winner}
         {winner}
         
         <h2>Changement de status</h2>
@@ -300,6 +298,7 @@ function App () {
         <button className='btn-endProposalsRegistering' onClick={endProposal} >End Proposal</button>
         <button className='btn-startVotingSession' onClick={startVoting} >Start Voting</button> 
         <button className='btn-endVotingSession' onClick={endVoting} >End Voting</button>
+        <button className='btn-Tallyvote' onClick={TallyVote} >Résultat vote</button>
         
       </div>
     );
