@@ -63,7 +63,9 @@ function App () {
   console.log("web3 :",web3);
   console.log("Worflow :",workf);
 
-  
+ 
+  //:::::::::::::::::::::::::::::: Gestion des Events :::::::::::::::::::::::::::::::://
+
 
  useEffect (() => {
 
@@ -108,6 +110,9 @@ function App () {
     setEvent();
   }, []);
 
+
+  //:::::::::::::::::::::::::::::: Workflow Status :::::::::::::::::::::::::::::::://
+
   useEffect (() => {
     updateWorflowStatus();
   }, []);
@@ -144,10 +149,13 @@ function App () {
     }
   }
 
+  //:::::::::::::::::::::::::::::: Rafraichissemenbt de la page :::::::::::::::::::::::::::::::://
+
   window.onload = updateWorflowStatus();
 
 
-  //faire les fonctions pour interagir avec le contrat
+  //:::::::::::::::::::::::::::::: Fonctions du contrat :::::::::::::::::::::::::::::::://
+
 
   function changeValueInput(e){
     setInputValue(e.target.value);
@@ -182,7 +190,8 @@ function App () {
 
 
 
-  //========================== STATUS ==================================
+ //:::::::::::::::::::::::::::::: Changement de Status :::::::::::::::::::::::::::::::://
+
 
 
   function startProposal () {
@@ -201,7 +210,8 @@ function App () {
     contract.methods.endVotingSession().send ({from : accounts[0]});
   }
 
-//================================Page Web========================================
+ //:::::::::::::::::::::::::::::: Page Web :::::::::::::::::::::::::::::::://
+
 
     if (!web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
