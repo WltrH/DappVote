@@ -4,7 +4,7 @@ pragma solidity 0.8.14;
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title Une application de vote
-/// @author Cyril Castagnet
+/// @author Guillaume Hornig
 
 contract Voting is Ownable {
 
